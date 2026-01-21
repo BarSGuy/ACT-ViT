@@ -1,0 +1,62 @@
+program: ./foundation_main.py
+project: ACT-ViT
+
+method: grid  # Using grid search to exhaustively find the best hyperparameters
+
+metric:
+  name: best_val_AUC  # Using validation AUC to evaluate performance
+  goal: maximize  # We want to maximize the validation AUC
+
+parameters:
+  # Training settings
+  num_epochs:
+    values: [5]
+  batch_size:
+    values: [128]
+  seed:
+    values: [0, 1, 2]
+
+ # Model architecture
+  probe_model:
+    values: ["ACT-MLP-foundation"]
+  hidden_dim:
+    values: [128]
+  num_layers:
+    values: [3, 5]
+  heads: # NOTE: This parameter is not used for ACT-MLP
+    values: [4]
+  dropout:
+    values: [0.3]
+
+  # Optimization settings
+  lr:
+    values: [0.001]
+  weight_decay:
+    values: [0.001]
+
+  # Dataset and input settings
+  train_dataset:
+    values:
+      - "mistralai/Mistral-7B-Instruct-v0.2:imdb mistralai/Mistral-7B-Instruct-v0.2:hotpotqa mistralai/Mistral-7B-Instruct-v0.2:triviaqa mistralai/Mistral-7B-Instruct-v0.2:movies mistralai/Mistral-7B-Instruct-v0.2:hotpotqa_with_context meta-llama/Meta-Llama-3-8B-Instruct:imdb meta-llama/Meta-Llama-3-8B-Instruct:hotpotqa meta-llama/Meta-Llama-3-8B-Instruct:triviaqa meta-llama/Meta-Llama-3-8B-Instruct:movies meta-llama/Meta-Llama-3-8B-Instruct:hotpotqa_with_context"
+  test_dataset:
+    values:
+      - "mistralai/Mistral-7B-Instruct-v0.2:imdb_test mistralai/Mistral-7B-Instruct-v0.2:hotpotqa_test mistralai/Mistral-7B-Instruct-v0.2:triviaqa_test mistralai/Mistral-7B-Instruct-v0.2:movies_test mistralai/Mistral-7B-Instruct-v0.2:hotpotqa_with_context_test meta-llama/Meta-Llama-3-8B-Instruct:imdb_test meta-llama/Meta-Llama-3-8B-Instruct:hotpotqa_test meta-llama/Meta-Llama-3-8B-Instruct:triviaqa_test meta-llama/Meta-Llama-3-8B-Instruct:movies_test meta-llama/Meta-Llama-3-8B-Instruct:hotpotqa_with_context_test"
+
+  num_workers:
+    values: [4]
+  pin_memory:
+    values: [1]
+  down_sample_strategy:
+    values: ["pool"]
+  patch_size: # NOTE: This parameter is not used for ACT-MLP
+    values: 
+      - (1, 1)
+
+  # Paths
+  base_pre_processed_data_dir:
+    values: ['PLACEHOLDER_BASE_PRE_PROCESSED_DATA_DIR']
+
+
+  # Hardware settings
+  cuda_idx:
+    values: [0]

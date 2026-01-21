@@ -1,0 +1,60 @@
+program: ./LA_training.py
+project: ACT-ViT
+
+method: grid  # Using grid search to exhaustively find the best hyperparameters
+
+metric:
+  name: best_val_AUC  # Using validation AUC to evaluate performance
+  goal: maximize  # We want to maximize the validation AUC
+
+parameters:
+  # Training settings
+  num_epochs:
+    values: [5]
+  batch_size:
+    values: [128]
+  seed:
+    values: [0, 1, 2]
+
+ # Model architecture
+  probe_model:
+    values: ["ACT-Vit-foundation"]
+  size_limit:
+    values: [500, 1000, 2000, 5000, 10000]
+
+  # Optimization settings
+  lr:
+    values: [0.001]
+  weight_decay:
+    values: [0.001]
+  wandb_link:
+    values: ["PLACEHOLDER_WANDB_LINK"]
+
+  # Dataset and input settings
+  train_dataset:
+    values:
+      - "Qwen/Qwen2.5-7B-Instruct:hotpotqa"
+  test_dataset:
+    values:
+      - "Qwen/Qwen2.5-7B-Instruct:hotpotqa_test"
+
+  num_workers:
+    values: [4]
+  pin_memory:
+    values: [1]
+  down_sample_strategy:
+    values: ["pool"]
+  # NOTE: this is ignored -- loading patch_size from pre-trained model from the wandb link
+  patch_size:
+    values: 
+      - (1, 1)
+      
+
+  # Paths
+  base_pre_processed_data_dir:
+    values: ['PLACEHOLDER_BASE_PRE_PROCESSED_DATA_DIR']
+
+  # Hardware settings
+  cuda_idx:
+    values: [0]
+
